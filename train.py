@@ -130,21 +130,20 @@ x_train_us_UNDER, y_train_us_UNDER = random_under_SAMPLING.fit_resample(x_train_
 
 
 y_train_us_UNDER['pha'] = y_train_us_UNDER['pha'].map({0: 'N', 1: 'Y'})
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, precision_recall_fscore_support
+
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
+lr = LogisticRegression()
 
-
-rfc = RandomForestClassifier(class_weight='balanced', random_state=100)
-# Skip Hyperparameter Tuning part because parameter with dafult value get the highest accuracy of model
-
-rfc.fit(x_train_us_rus, y_train_us_rus)
-
+lr.fit(x_train_us_rus, y_train_us_rus)
 # Predict for validation set
-y_val_pred = rfc.predict(x_val)
+y_val_pred = lr.predict(x_val)
 
 # Metrics
-precision_rfc, recall_rfc, fscore_rfc, support_rfc = precision_recall_fscore_support(
+precision_lr, recall_lr, fscore_lr, support_lr = precision_recall_fscore_support(
     y_val, y_val_pred, average='macro')
-metrics = {'precision_rfc': precision_rfc, 'recall_rfc': recall_rfc}
+metrics = {'precision_lr': precision_lr, 'recall_lr': recall_lr}
 with open('metrics.json', 'w') as f:
     json.dump(metrics, f)
